@@ -24,6 +24,8 @@ export default function LotteryEntrance() {
      * https://stackoverflow.com/questions/58252454/react-hooks-using-usestate-vs-just-variables
      */
     const [entranceFee, setEntranceFee] = useState("0")
+    const [numberOfPlayers, setNumberOfPlayers] = useState("0")
+    const [recentWinner, setRecentWinner] = useState("0")
 
     const dispatch = useNotification()
 
@@ -46,6 +48,20 @@ export default function LotteryEntrance() {
         params: {},
     })
 
+    const { runContractFunction: getNumberOfPlayers } = useWeb3Contract({
+        abi: abi,
+        contractAddress: raffleAddress,
+        functionName: "getNumberOfPlayers",
+        params: {}
+    })
+
+    const { runContractFunction: getRecentWinner } = useWeb3Contract({
+        abi: abi,
+        contractAddress: raffleAddress,
+        functionName: "getRecentWinner",
+        params: {},
+    })
+
     async function updateUI() {
         /*
          * Otra forma seria hacer un llamado al contrato
@@ -57,7 +73,11 @@ export default function LotteryEntrance() {
          */
 
         const entranceFeeFromCall = (await getEntranceFee()).toString()
+        const numPlayersFromCall = (await getNumberOfPlayers()).toString()
+        const recentWinnerFromCall = (await getRecentWinner())
         setEntranceFee(entranceFeeFromCall)
+        setNumberOfPlayers(numPlayersFromCall)
+        setRecentWinner(recentWinnerFromCall)
     }
 
     useEffect(() => {
@@ -104,6 +124,8 @@ export default function LotteryEntrance() {
                         Enter Raffle
                     </button>
                     Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
+                    Number of players: {numberOfPlayers}
+                    Recent winner: {recentWinner}
                 </div>
             ) : (
                 <div>No Raffle address detected!</div>
