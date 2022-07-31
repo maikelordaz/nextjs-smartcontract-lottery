@@ -1,5 +1,4 @@
 # Smart Lottery frontend
 
-This is a basic frontend just using react, moralis and web3uikit
+This is a basic frontend just using nextJs
 It correspond for [this repo](https://github.com/maikelordaz/Hardhat-Loterry)
-You can check the result page in [here]()
