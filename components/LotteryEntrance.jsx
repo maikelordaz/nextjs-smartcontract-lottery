@@ -29,7 +29,11 @@ export default function LotteryEntrance() {
 
     const dispatch = useNotification()
 
-    const { runContractFunction: enterRaffle } = useWeb3Contract({
+    const {
+        runContractFunction: enterRaffle,
+        isLoading,
+        isFetching,
+    } = useWeb3Contract({
         /*
          * Estos valores podria darlos como constantes, pero es mejor automatizarlo con un script en
          * el directorio del contrato
@@ -52,7 +56,7 @@ export default function LotteryEntrance() {
         abi: abi,
         contractAddress: raffleAddress,
         functionName: "getNumberOfPlayers",
-        params: {}
+        params: {},
     })
 
     const { runContractFunction: getRecentWinner } = useWeb3Contract({
@@ -74,7 +78,7 @@ export default function LotteryEntrance() {
 
         const entranceFeeFromCall = (await getEntranceFee()).toString()
         const numPlayersFromCall = (await getNumberOfPlayers()).toString()
-        const recentWinnerFromCall = (await getRecentWinner())
+        const recentWinnerFromCall = await getRecentWinner()
         setEntranceFee(entranceFeeFromCall)
         setNumberOfPlayers(numPlayersFromCall)
         setRecentWinner(recentWinnerFromCall)
@@ -109,23 +113,29 @@ export default function LotteryEntrance() {
     }
 
     return (
-        <div>
-            Hi from Lottery LotteryEntrance!
+        <div className="p-5">
+            <h1 className="py-4 px-4 font-bold text-3xl">Smart Lottery</h1>
             {raffleAddress ? (
-                <div>
+                <div className="">
                     <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
                         onClick={async function () {
                             await enterRaffle({
                                 onSuccess: handleSuccess,
                                 onError: (error) => console.log(error),
                             })
                         }}
+                        disabled={isLoading || isFetching}
                     >
-                        Enter Raffle
+                        {isLoading || isFetching ? (
+                            <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
+                        ) : (
+                            <div>Enter Raffle</div>
+                        )}
                     </button>
-                    Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
-                    Number of players: {numberOfPlayers}
-                    Recent winner: {recentWinner}
+                    <div>Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH</div>
+                    <div>Number of players: {numberOfPlayers}</div>
+                    <div>Recent winner: {recentWinner}</div>
                 </div>
             ) : (
                 <div>No Raffle address detected!</div>

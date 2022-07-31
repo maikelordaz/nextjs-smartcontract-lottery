@@ -46,24 +46,29 @@ export default function ManualHeader() {
     }, [])
 
     return (
-        <div>
-            {account ? (
-                <div>
-                    Connected to {account.slice(0, 6)}...{account.slice(account.length - 4)}
-                </div>
-            ) : (
-                <button
-                    onClick={async () => {
-                        await enableWeb3()
-                        if (typeof window !== "undefinde") {
-                            window.localStorage.setItem("connected", "injected")
-                        }
-                    }}
-                    disabled={isWeb3EnableLoading}
-                >
-                    Connect
-                </button>
-            )}
-        </div>
+        <nav className="p-5 border-b-2">
+            <ul className="">
+                <li className="flex flex-row">
+                    {account ? (
+                        <div className="ml-auto py-2 px-4">
+                            Connected to {account.slice(0, 6)}...
+                            {account.slice(account.length - 4)}
+                        </div>
+                    ) : (
+                        <button
+                            onClick={async () => {
+                                await enableWeb3()
+                                if (typeof window !== "undefinde") {
+                                    window.localStorage.setItem("connected", "injected")
+                                }
+                            }}
+                            disabled={isWeb3EnableLoading}
+                        >
+                            Connect
+                        </button>
+                    )}
+                </li>
+            </ul>
+        </nav>
     )
 }
